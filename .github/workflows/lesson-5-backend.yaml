@@ -10,6 +10,12 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Run security tests
+        run: |
+          pip install bandit
+          bandit -r hangry_api
   unit_test:
     needs: [security_test]
     runs-on: ubuntu-latest
