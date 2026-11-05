@@ -5,7 +5,13 @@ on:
     branches:
       - lesson-5
 jobs:
+  security_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
   unit_test:
+    needs: [security_test]
     runs-on: ubuntu-latest
     defaults:
       run:
