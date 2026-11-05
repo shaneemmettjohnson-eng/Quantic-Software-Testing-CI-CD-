@@ -1,10 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { API_URL } from '../../utils/constants';
 import axios from 'axios';
 import Home from '.';
 
 describe('Test Home', () => {
-  test('Test Render', async () => {
+   afterEach(() => {
+    jest.restoreAllMocks();
+  });
+   test('Test Render', async () => {
     //Arrange: Setup the mock API
     //Listen for any GET requests using the axios module
     const mockGet = jest.spyOn(axios, 'get');
@@ -45,6 +48,13 @@ describe('Test Home', () => {
     //There should be 2 categories as defined in the mock response above
     expect(await screen.findAllByTestId(/category-item/i)).toHaveLength(2);
     //The word Appeateasers should be in there as defined in the mock response above.
+    expect(await screen.findByText('Appeteasers')).toBeInTheDocument();
+  });
+  test('loads categories from the live API', async () => {
+    // Render Home without mocking Axios so it requests the configured API.
+    render(<Home />);
+
+    expect(await screen.findAllByTestId(/category-item/i)).not.toHaveLength(0);
     expect(await screen.findByText('Appeteasers')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { API_URL } from '../../utils/constants';
 import axios from 'axios';
@@ -30,14 +30,16 @@ describe('Test Order', () => {
     //Setup the Mock API
     setupMock();
     //Call the page
-    render(
-      <OrderContext.Provider value={{ orderName, orderItems }}>
-        <Order />
-      </OrderContext.Provider>
-    );
-    //Assert: replace the return true.
+    await act(async () => {
+      render(
+        <OrderContext.Provider value={{ orderName, orderItems }}>
+          <Order />
+        </OrderContext.Provider>
+      );
+    });
+    const deliveryFeeRow = screen.getByText('Delivery Fee').parentElement;
     await waitFor(() => {
-      return true;
+      expect(deliveryFeeRow).toHaveTextContent('$2.50');
     });
   });
 
@@ -47,23 +49,27 @@ describe('Test Order', () => {
     //Setup the Mock API
     setupMock();
     //Call the page
-    render(
-      <OrderContext.Provider value={{ orderName, orderItems }}>
-        <Order />
-      </OrderContext.Provider>
-    );
+    await act(async () => {
+      render(
+        <OrderContext.Provider value={{ orderName, orderItems }}>
+          <Order />
+        </OrderContext.Provider>
+      );
+    });
 
     //ACT
     //Update the Delivery distance by choosing the 5 mile option from the drop down
-    userEvent.selectOptions(
-      // Find the select element, like a real user would.
-      screen.getByRole('combobox'),
-      // Find and select the 5 mile option, like a real user would.
-      screen.getByRole('option', { name: '5 miles' })
-    );
-    //Assert: replace the return true.
+    await act(async () => {
+      await userEvent.selectOptions(
+        // Find the select element, like a real user would.
+        screen.getByRole('combobox'),
+        // Find and select the 5 mile option, like a real user would.
+        screen.getByRole('option', { name: '5 miles' })
+      );
+    });
+    const deliveryFeeRow = screen.getByText('Delivery Fee').parentElement;
     await waitFor(() => {
-      return true;
+      expect(deliveryFeeRow).toHaveTextContent('$5.00');
     });
   });
 });
