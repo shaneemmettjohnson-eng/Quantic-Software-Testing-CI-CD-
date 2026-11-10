@@ -15,9 +15,7 @@ jobs:
 #      - run: npm install
 #      - name: Run functional tests
 #        run: npm test -- --coverage --watchAll=false
-  deploy:
-#    needs: [function_test] acceptance_test:
-    needs: [deploy]
+  acceptance_test:
     runs-on: ubuntu-latest
     container: cypress/included:10.3.0
     defaults:
@@ -31,6 +29,8 @@ jobs:
         with:
           name: cypress-videos
           path: frontend/cypress/videos
+  deploy:
+    needs: [acceptance_test]
     runs-on: ubuntu-latest
     defaults:
       run:
