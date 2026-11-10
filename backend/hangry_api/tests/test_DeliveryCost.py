@@ -27,9 +27,42 @@ def test_MiddleOfTheRoadItems():
 
 def test_LittleItems():
   #Arrange
-  # TODO: Arrange the items to run the test
+  order = MockSet()
+  order.add(MockModel(quantity=1))
+  order.add(MockModel(quantity=1))
+  order.add(MockModel(quantity=1))
+  delivery_distance = 2
   #Act
-  # TODO: Call the function that will be tested
+  cost = Delivery.calculate(order, delivery_distance)
   #Assert
-  # TODO: replace the pass with an assert to test the value returned.
-  pass
+  assert cost == 2.5
+
+def test_MoreThanTenItemsButDistanceIsNotMoreThanFive():
+  #Arrange
+  order = MockSet()
+  order.add(MockModel(quantity=11))
+  delivery_distance = 5
+  #Act
+  cost = Delivery.calculate(order, delivery_distance)
+  #Assert
+  assert cost == 5
+
+def test_MoreThanFiveItemsButDistanceIsNotMoreThanThree():
+  #Arrange
+  order = MockSet()
+  order.add(MockModel(quantity=6))
+  delivery_distance = 3
+  #Act
+  cost = Delivery.calculate(order, delivery_distance)
+  #Assert
+  assert cost == 2.5
+
+def test_FiveItemsDoNotQualifyForMiddleFee():
+  #Arrange
+  order = MockSet()
+  order.add(MockModel(quantity=5))
+  delivery_distance = 4
+  #Act
+  cost = Delivery.calculate(order, delivery_distance)
+  #Assert
+  assert cost == 2.5
